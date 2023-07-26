@@ -1,0 +1,1 @@
+This is a program to ensure that all Open Lending blog entries are unique using Java and Selenium.
