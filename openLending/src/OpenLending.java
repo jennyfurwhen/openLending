@@ -1,3 +1,5 @@
+import java.time.Duration;
+import java.util.HashMap;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -42,5 +44,32 @@ public class OpenLending {
             wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(loadingButtonXpath)));
             wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(loadingButtonXpath)));
         }
+
+        // Iterate through each blog text and link 
+        // If blog text and corresponding link alread exists, fail test
+        // If it doesn't, add it to the hash and continue iterating
+        // If all don't exist, pass
+        String numOfBlogsXpath = "//section[@id='featured-box-section']//li";
+        int numOfBlogs = driver.findElements(By.xpath(numOfBlogsXpath)).size();
+        HashMap<String, String> blogsHash = new HashMap<String, String>();
+        for (int i = 1; i < numOfBlogs; i++) {
+            String blogXpath = String.format("//section[@id='featured-box-section']//li[%d]", i);
+            String blogLinkXpath = String.format("(//div[@class='lenders-featured-block'])[%d]//a[@class='read-more-link outline-primary-link']", i);
+            String blogText = driver.findElement(By.xpath(blogXpath)).getText();
+            String blogLink = driver.findElement(By.xpath(blogLinkXpath)).getAttribute("href");
+            if (blogsHash.containsKey(blogText)) {
+                if (blogsHash.get(blogText) == blogLink) {
+                    String errorMsg = String.format("Duplicate blog post found: %s with link %s", blogText, blogLink);
+                    driver.quit(); 
+                    throw new Error(errorMsg);
+                }
+            }
+            else {
+                blogsHash.put(blogText, blogLink);
+            }
+        }
+
+        System.out.println("Test passed");
+        driver.quit(); 
     }
 }
