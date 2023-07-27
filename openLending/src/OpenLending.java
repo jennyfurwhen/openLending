@@ -8,11 +8,15 @@ public class OpenLending {
     public static void main(String[] args) throws Exception {
         WebDriver driver = new ChromeDriver();
         driver.manage().window().maximize();
-        
+      
         // Go to Google and search for OpenLending
         driver.get("https://www.google.com");
         WebElement searchbar = driver.findElement(By.name("q"));
         searchbar.sendKeys("OpenLending");
         searchbar.sendKeys(Keys.RETURN);
-    }
+
+        // Click on the OpenLending result link
+        String resultXpath = "//*[text()='Automated Lending Platform | Open Lending | United States']";
+        driver.findElement(By.xpath(resultXpath)).click();
+   }
 }
